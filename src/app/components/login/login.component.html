@@ -1,0 +1,75 @@
+
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.6)"
+  size="medium"
+  color="#fff"
+  type="ball-atom">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<body class="login-page ">
+
+<div class="page-header header-filter" style="background-image: url(%26apos%3b/assets/img/kit/pro/bg7.html); background-size: cover; background-position: top center;">
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-md-4 col-sm-6 ml-auto mr-auto">
+        <div class="col-md-12">
+          <span class="danger-badge" style="color: orange;" *ngIf="error">
+              <b>Error Alert:</b> {{'incorrect_login_or_password' | translate}}...
+          </span>
+        </div>
+
+        <div class="card card-signup">
+          <form class="form" method="" action="#">
+
+            <div class="card-body">
+                                <span class="bmd-form-group"><div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-database" style="width: 24px;height: 24px;"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" name="instance" #inst [(ngModel)]="instance" class="form-control" placeholder="{{ 'instance' | translate }}...">
+                                </div></span>
+
+              <span class="bmd-form-group"><div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="material-icons">account_circle</i>
+                                        </span>
+                                    </div>
+                                    <input type="email" name="username" #usrname [(ngModel)]="username" class="form-control" placeholder="{{ 'username' | translate }}...">
+                                </div></span>
+              <span class="bmd-form-group"><div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="material-icons">lock_outline</i>
+                                        </span>
+                                    </div>
+                                    <input type="password" name="password" #psswd [(ngModel)]="password" class="form-control" placeholder="{{ 'password' | translate }}......">
+                                </div></span>
+              <!-- If you want to add a checkbox to this form, uncomment this code
+
+              <div class="checkbox">
+                  <label>
+                      <input type="checkbox" name="optionsCheckboxes" checked>
+                      Subscribe to newsletter
+                  </label>
+              </div> -->
+            </div>
+            <div class="footer text-center">
+              <button   class="btn btn-primary btn-link btn-wd btn-lg" (click)="login()">{{'login_text' | translate}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<!-- Mirrored from demos.creative-tim.com/marketplace/material-kit-pro/examples/login-page.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Aug 2018 08:52:07 GMT -->
+
+</body>

@@ -1,0 +1,138 @@
+<div class="main" xmlns="http://www.w3.org/1999/html">
+  <div class="cd-section" id="features">
+    <div class="main main-raised">
+      <div class="space"></div>
+      <div class="popover fade bs-popover-bottom show" x-placement="bottom" *ngIf="pop" [ngStyle]="{ 'top.px' : top  , 'left.px' :  left}">
+        <div class="" style="top: 60px;"></div>
+        <h3 class="popover-header">{{SelectedElem.title}}</h3>
+        <div class="popover-body">
+          <br>
+          <p>
+
+            <strong>{{'staff_name' | translate}} : </strong>{{SelectedElem.staff}}
+          </p>
+          <p>
+            <strong>{{'start_date' | translate}} : </strong>{{SelectedElem.start | date: 'dd.MM.yyyy HH:mm'}}
+          </p>
+          <p *ngIf="SelectedElem.end">
+            <strong>{{'end_date' | translate}} : </strong>{{SelectedElem.end | date: 'dd.MM.yyyy HH:mm'}}
+          </p>
+        </div>
+      </div>
+      <div class="row" #Row>
+        <div class="col-md-2" style="top: 110px;" (mouseover)="Adjust($event)">
+          <div class="">
+            <div class="">
+              <div class="col-12 social-buttons-demo" style="padding-right: 0px;">
+                <h3>
+                  <h3 style="text-align: center"> {{'staff' | translate}} </h3>
+                </h3>
+
+                <perfect-scrollbar  [style.max-height]="scrollHeigth">
+
+                  <div class="input-group" *ngFor="let staff of staffs" [id]="staff.id" (click)="Color($event)">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <label   [id]="staff.id" style="width: 20px;height: 20px;border:1px solid black;border-radius: 3px;" [style.background]="staff.color">
+
+                        </label>
+                        <br>
+                      </span>
+                    </div>
+                    {{staff.name | slice:0:20}}
+                  </div>
+                    <br>
+                </perfect-scrollbar>
+                <div>
+
+                </div>
+
+
+              </div>
+            </div>
+          </div>  </div>
+        <div #Calendar class="col-md-9" style="padding-left: 0px;">
+          <div class="subscribe-line subscribe-line-white">
+            <div class="">
+
+              <div class="row">
+
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <div *ngIf="calendarOptions">
+              <ng-fullcalendar #ucCalendar [options]="calendarOptions"
+                               (eventStartEditable)="true"
+                               (eventResize)="draging($event)"
+                               (eventDrop)="draging($event)"
+                               (eventMouseOver)="PopOver($event)"
+                               (eventMouseOut)="undisplay()"
+                               (eventClick)="DisplayChangeStaff($event)"
+                               (navLinkWeekClick)="Test()"
+
+
+              ></ng-fullcalendar>
+
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div  #modal  class="modal fade show" id="smallAlertModal" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog modal-small" role="document">
+    <div class="modal-content"  #settingModal (clickOutside)="ClickOutSide()">
+
+      <div class="modal-header">
+        <h5 class="modal-title card-title">{{'change_staff' | translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+          <i class="material-icons" (click)="unDisplayChangeStaff()">clear</i>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="row">
+          <div class="col-md-4">
+            <span class="input-group-text">
+              {{'staff' | translate}} :
+            </span>
+          </div>
+
+          <div class="col-md-8">
+            <select class="form-control" data-style="select-with-transition" [(ngModel)]="SelectedStaff" title="Single Select" data-size="7">
+              <option *ngFor="let staff of staffs" value="{{staff.id}}" >{{staff.name}}</option>
+            </select>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <span class="input-group-text">
+              {{'start_date' | translate}} :
+            </span>
+          </div>
+
+          <div class="col-md-8">
+            <input type="text" name="start_time" class="form-control timepicker" #start value="{{StartTime}}"  [(ngModel)]="StartTime">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer justify-content-center">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--  modals -->
+
+

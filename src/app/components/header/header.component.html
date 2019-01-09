@@ -1,0 +1,212 @@
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.6)"
+  size="medium"
+  color="#fff"
+  type="ball-atom">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<nav  class="navbar  bg-white   fixed-top  navbar-expand-lg " id="sectionsNav">
+  <a href="/" class="" style="margin-left: 4.5%;">
+    <img src="http://www.nexti.de/images/logo_nexti.png" class="" alt="" style="width: 50px;height: 50px;">
+    Nexti Web App</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto" style="margin: auto;">
+      <li class="nav-item">
+        <h2 class="title">{{'description_header' | translate}}</h2>
+      </li>
+    </ul>
+    <ul class="navbar-nav" style="margin-right: 9.7%;">
+      <li class="dropdown nav-item">
+        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+          <img *ngIf="lang === 'de'" class="flag" src="https://lipis.github.io/flag-icon-css/flags/4x3/de.svg" style="width: 24px; height: 24px">
+          <img *ngIf="lang === 'en'" class="flag" src="https://lipis.github.io/flag-icon-css/flags/4x3/gb.svg" style="width: 24px; height: 24px">
+        </a>
+        <div class="dropdown-menu" title="de">
+            <span (click)="changeLang('de')" class="dropdown-item">
+              <div class="col-md-2">
+                <img  class="flag" src="https://lipis.github.io/flag-icon-css/flags/4x3/de.svg" style="width: 24px; height: 24px" >
+
+              </div>
+              <div class="col-md-4">
+                Deutsh
+              </div>
+            </span>
+
+          <span  (click)="changeLang('en')" class="dropdown-item" title="en">
+              <div class="col-md-2">
+                <img  class="flag" src="https://lipis.github.io/flag-icon-css/flags/4x3/gb.svg" style="width: 24px; height: 24px" title="en">
+
+              </div>
+              <div class="col-md-4">
+                English
+              </div>
+            </span>
+
+        </div>
+      </li>
+      <li *ngIf="isLoged.isLoged()" class="dropdown nav-item">
+        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+          <i class="material-icons">account_circle</i> {{user.userInfo()}}
+        </a>
+        <div class="dropdown-menu dropdown-with-icons">
+          <a href="#" class="dropdown-item" (click)="DisplaySettings()">
+            <i class="material-icons">settings</i> {{'settings' | translate}}
+          </a>
+          <a href="#" (click)="logout()" class="dropdown-item">
+            <i class="material-icons">fingerprint</i> {{'logout' | translate}}
+          </a>
+
+        </div>
+      </li>
+      <li class="nav-item" *ngIf="isLoged.isLoged()">
+        <a class="nav-link" title="{{'updated_detected' | translate}}" *ngIf="LocalStorage() === '0'"  data-toggle="tab">
+          <img src="http://192.168.100.136/nexti/web/img/icons8-database-import-50.png" style="width: 25px;height: 25px;">
+        </a>
+        <a class="" title="Commit your changes to the server" *ngIf="LocalStorage() === '1'"  data-toggle="tab" (click)="Commit()" data-toggle="tooltip" data-placement="bottom"  data-container="body" title="{{'updated_detected' | translate}}"  data-original-title="Commit">
+          <img src="http://192.168.100.136/nexti/web/img/icons8-database-import-50.png" class="element-animation" style="width: 25px;height: 25px;">
+        </a>
+
+      </li>
+    </ul>
+  </div>
+</nav>
+<div *ngIf="settings"  class="modal fade show" id="signupModal" tabindex="-1" role="dialog" style="display: block">
+  <div class="modal-dialog modal-signup" role="document">
+    <div class="modal-content">
+      <div class="card card-signup card-plain">
+        <div class="modal-header">
+          <h5 class="modal-title card-title">{{'settings' | translate}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+            <i class="material-icons" (click)="UnDisplaySettings()">clear</i>
+          </button>
+        </div>
+        <div class="modal-body" (clickOutside)="ClickOutSide()">
+          <div class="row">
+            <div class="col-md-5 ml-auto">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                       {{'time_interval' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" [(ngModel)]="defaultTime" title="Single Select" data-size="7">
+                  <option disabled>  {{'time_interval' | translate}}</option>
+                  <option value="1">1 min</option>
+                  <option value="5">5 min</option>
+                  <option value="15">15 min</option>
+                  <option value="30">30 min</option>
+                </select>
+              </div>
+
+
+            </div>
+            <div class="col-md-5 mr-auto">
+              <div class="togglebutton" style="
+    margin-top: 20px;
+">
+                <label>
+                  <input type="checkbox" id="snap" [(ngModel)]="snap" [disabled]="snapDisabled" (click)="UpdateSettings()">
+                  <span class="toggle"></span>
+                  Snap
+                </label>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 ml-auto">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                         {{'timeout_befor_logout' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" [(ngModel)]="MINUTES_UNITL_AUTO_LOGOUT" title="Single Select" data-size="7" (change)="Refresh()">
+                  <option disabled> {{'timeout_befor_logout' | translate}}</option>
+                  <option value="1">1 min</option>
+                  <option value="15">15 min</option>
+                  <option value="30">30 min</option>
+                  <option value="60">60 min</option>
+                </select>
+              </div>
+
+
+            </div>
+            <div class="col-md-5 mr-auto">
+              <div class="togglebutton" style="
+    margin-top: 20px;
+">
+                <label>
+                  <input type="checkbox" id="commit" [(ngModel)]="commit"  (click)="UpdateSettings()">
+                  <span class="toggle"></span>
+                  Commit befor logout
+                </label>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 ml-auto">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                       {{'oppening' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" [(ngModel)]="oppening" title="Single Select" data-size="7">
+                  <option disabled> {{'oppening' | translate}}</option>
+                  <option value="00:00">00:00</option>
+                  <option value="01:00">01:00</option>
+                  <option value="02:00">02:00</option>
+                  <option value="03:00">03:00</option>
+                  <option value="04:00">04:00</option>
+                  <option value="05:00">05:00</option>
+                  <option value="06:00">06:00</option>
+                  <option value="07:00">07:00</option>
+                  <option value="08:00">08:00</option>
+                  <option value="09:00">09:00</option>
+                  <option value="10:00">10:00</option>
+                  <option value="11:00">11:00</option>
+                  <option value="12:00">12:00</option>
+                </select>
+              </div>
+
+
+            </div>
+            <div class="col-md-5 mr-auto">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                         {{'closing' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" [(ngModel)]="closing" title="Single Select" data-size="7">
+                  <option disabled> {{'closing' | translate}}</option>
+                  <option value="13:00">12:00</option>
+                  <option value="14:00">13:00</option>
+                  <option value="15:00">14:00</option>
+                  <option value="16:00">15:00</option>
+                  <option value="17:00">16:00</option>
+                  <option value="18:00">17:00</option>
+                  <option value="19:00">18:00</option>
+                  <option value="20:00">19:00</option>
+                  <option value="21:00">20:00</option>
+                  <option value="22:00">21:00</option>
+                  <option value="23:00">22:00</option>
+                  <option value="24:00">23:00</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

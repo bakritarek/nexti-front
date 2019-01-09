@@ -1,0 +1,26 @@
+{
+
+  "login_text": "Login",
+  "login_button": "Login",
+  "logout_message": "Logout",
+  "username": "Username",
+  "password": "Password",
+  "login_to_account": "Login to your account",
+  "forgot_password": "Forgot Username or password?",
+  "logout": "Logout",
+  "instance": "Instance",
+  "incorrect_login_or_password": "Inccorect login or password",
+  "staff" : "Staff",
+  "updated_detected" : "Commit your changes to  the server",
+  "settings": "Settings",
+  "commit" : "Commit",
+  "timeout_befor_logout": "Timeout befor Logout",
+  "time_interval": "Calendar - Time Interval",
+  "closing": "End working time",
+  "oppening": "Start working time",
+  "description_header" : "Service Staff Planning",
+  "change_staff": "Change staff",
+  "staff_name": "Staff Name",
+  "start_date": "Start Time",
+  "end_date": "End Time"
+}
