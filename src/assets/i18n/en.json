@@ -1,5 +1,6 @@
 {
 
+
   "login_text": "Login",
   "login_button": "Login",
   "logout_message": "Logout",
@@ -12,6 +13,7 @@
   "incorrect_login_or_password": "Inccorect login or password",
   "staff" : "Staff",
   "updated_detected" : "Commit your changes to  the server",
+
   "settings": "Settings",
   "commit" : "Commit",
   "timeout_befor_logout": "Timeout befor Logout",
@@ -22,5 +24,25 @@
   "change_staff": "Change staff",
   "staff_name": "Staff Name",
   "start_date": "Start Time",
-  "end_date": "End Time"
+  "end_date": "End Time",
+  "event_title": "Event Title 1",
+  "event_title2": "Event Title 2",
+  "event_title3": "Event Title 3",
+  "time": "Time",
+  "event": "Event",
+  "company_name": "Company",
+  "company_no": "Company ID",
+  "servicecase_no": "Event ID",
+  "shortdescription": "Short Description",
+  "longdescription": "Long Description",
+  "taskttype": "Task Type",
+  "empty": "Empty",
+
+  "status": "Status",
+  "new": "New",
+  "traveling": "Traveling",
+  "waiting": "Waiting",
+  "paused": "Paused",
+  "active": "Active"
+
 }

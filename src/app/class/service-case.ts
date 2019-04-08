@@ -16,4 +16,6 @@ export class ServiceCase {
   staff_id: number;
   className: string;
   company: string;
+  url: string;
+  status: string;
 }

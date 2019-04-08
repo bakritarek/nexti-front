@@ -1,3 +1,10 @@
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.6)"
+  size="medium"
+  color="#fff"
+  type="ball-atom">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
 <div class="main" xmlns="http://www.w3.org/1999/html">
   <div class="cd-section" id="features">
     <div class="main main-raised">
@@ -16,6 +23,9 @@
           </p>
           <p *ngIf="SelectedElem.end">
             <strong>{{'end_date' | translate}} : </strong>{{SelectedElem.end | date: 'dd.MM.yyyy HH:mm'}}
+          </p>
+          <p>
+            <strong>{{'status' | translate}} ( <span [innerHTML]="statusIcon"></span> ) : </strong>{{SelectedElem.status| translate}}
           </p>
         </div>
       </div>
@@ -84,8 +94,6 @@
     </div>
   </div>
 </div>
-
-
 <!-- Modal -->
 <div  #modal  class="modal fade show" id="smallAlertModal" tabindex="-1" role="dialog" style="display: none;">
   <div class="modal-dialog modal-small" role="document">

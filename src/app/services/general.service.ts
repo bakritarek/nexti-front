@@ -21,6 +21,7 @@ export class GeneralService {
     localStorage.setItem('name', '');
     localStorage.setItem('stillLoged', '');
     localStorage.setItem('updatedElements', '0');
+    localStorage.setItem('view', '');
     return this.response = this.http.get(this.url + 'logout/' + id);
 
 

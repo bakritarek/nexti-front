@@ -45,14 +45,32 @@ export class CalendarService {
     }
 
     return this.http.get(this.url + 'update-event/' + event.id + '/' +  event.start + '/'
-      + event.end + '/' + event.starttime + '/' + event.endtime + '/' + localStorage.getItem('systemid') + '/' + localStorage.getItem('id') );
+      + event.end + '/' + event.starttime + '/' + event.endtime + '/' +
+      localStorage.getItem('systemid') + '/' + localStorage.getItem('id') );
   }
 
   getSettings(id: string, systemid: string) {
     return this.http.get(this.url + 'settings/' + id + '/' + systemid);
   }
-  updateSettings(time: string, snap: boolean, timeout: string, commit: boolean, oppening: string, closing: string, id: string, systemid: string) {
-    return this.http.get(this.url + 'settings/update/' + time + '/' + snap + '/' + timeout + '/' + commit + '/' + oppening + '/' + closing + '/' +  id + '/' + systemid);
+  updateSettings(time: string, snap: boolean, timeout: string, commit: boolean, oppening: string, closing: string, title: string,
+                 title2: string, title3: string, status: string, id: string, systemid: string) {
+    return this.http.get(this.url + 'settings/update/' + time + '/' + snap + '/'
+      + timeout + '/' + commit + '/' + oppening + '/' + closing + '/'  + title + '/' + title2 + '/' + title3 + '/' + status + '/' +
+      id + '/' + systemid);
+  }
+
+  getTitles() {
+    return this.http.get(this.url + 'settings/titles-' + localStorage.getItem('systemid'));
+  }
+
+  getTitlesCon(title1: string, titlex: string) {
+    return this.http.get(this.url + 'settings/titles_con-' + localStorage.getItem('systemid') + '/' +
+      title1 + '/' + titlex);
+  }
+
+  getTitle(servicecaseid: string, title: string) {
+    return this.http.get(this.url + 'settings/title-' + localStorage.getItem('systemid') +
+    '-' + servicecaseid + '-' + title);
   }
 
   beforCommit(id: number) {
@@ -92,6 +110,11 @@ export class CalendarService {
   ChangeStaffFunc(staffid: string, servicecaseid: string, start: string) {
     return this.http.get(this.url + 'change_staff/' + staffid + '/' + servicecaseid + '/' + localStorage.getItem('systemid')  +
     '/' + localStorage.getItem('id') + '/' + start);
+  }
+
+  getStatusFromHref(url: string) {
+    return this.http.get(this.url + 'status_from_url/' + url + '/' + localStorage.getItem('systemid')  +
+      '/' + localStorage.getItem('id'));
   }
 
 }

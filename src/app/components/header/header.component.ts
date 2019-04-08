@@ -26,6 +26,14 @@ export class HeaderComponent implements OnInit {
   oppening;
   closing;
   SettingModalIsOpen = false;
+  EventStatus;
+  Title1;
+  Title2;
+  Title3;
+  Titles ;
+  Titles2 ;
+  Titles3;
+
   constructor(public isLoged: AuthService, private translate: TranslateService, public user: GeneralService, private router: Router,
               private calendarService: CalendarService) {
     this.username = localStorage.getItem('name');
@@ -52,12 +60,10 @@ export class HeaderComponent implements OnInit {
     return localStorage.getItem('updatedElements');
   }
   Commit() {
-    console.log('spinner');
     this.isLoged.Spinner();
     this.calendarService.Commit().subscribe(data => {
       if (data === 1) {
         localStorage.setItem('updatedElements', '0');
-        console.log('reload');
         setTimeout(() => {
           this.calendarService.afterCommit();
         }, 1000);
@@ -67,19 +73,37 @@ export class HeaderComponent implements OnInit {
 
 
   }
+  UpdateTitlesArray() {
+    this.calendarService.getTitlesCon(this.Title2, this.Title3).subscribe(Titles => {
+      this.Titles = Titles;
+      console.log(Titles);
+    });
+    this.calendarService.getTitlesCon(this.Title1, this.Title3).subscribe(Titles2 => {
+      this.Titles2 = Titles2;
+      console.log(Titles2);
+    });
+    this.calendarService.getTitlesCon(this.Title1, this.Title2).subscribe(Titles3 => {
+      this.Titles3 = Titles3;
+      console.log(Titles3);
+    });
+  }
   DisplaySettings() {
     this.prepareCalendar();
+
     if (this.defaultTime !== '1') {
       this.snapDisabled = false;
     }
     this.settings = true;
     setTimeout(() => {
+      this.UpdateTitlesArray();
       this.SettingModalIsOpen = true;
+
     }, 100);
   }
   UnDisplaySettings() {
     this.settings = false;
     this.SettingModalIsOpen = false;
+    this.Refresh();
   }
 
   ClickOutSide() {
@@ -98,6 +122,15 @@ export class HeaderComponent implements OnInit {
       this.MINUTES_UNITL_AUTO_LOGOUT = data['timeout'];
       this.oppening = data['start_time'];
       this.closing = data['end_time'];
+      this.Title1 = data['title'];
+      this.Title2 = data['title2'];
+      this.Title3 = data['title3'];
+      if (data['status'] === '1') {
+        this.EventStatus = true;
+      }
+      if (data['status'] === '0') {
+        this.EventStatus = false;
+      }
 
     });
   }
@@ -113,7 +146,8 @@ export class HeaderComponent implements OnInit {
   UpdateSettings() {
     setTimeout(() => {
       this.calendarService.updateSettings(
-        this.defaultTime, this.snap, this.MINUTES_UNITL_AUTO_LOGOUT, this.commit, this.oppening, this.closing, localStorage.getItem('id'), localStorage.getItem('systemid'))
+        this.defaultTime, this.snap, this.MINUTES_UNITL_AUTO_LOGOUT, this.commit, this.oppening,
+        this.closing, this.Title1, this.Title2, this.Title3, this.EventStatus, localStorage.getItem('id'), localStorage.getItem('systemid'))
         .subscribe(
           data => {
           }
@@ -121,8 +155,15 @@ export class HeaderComponent implements OnInit {
     }, 100);
   }
   UpdateSettingsNoTimeOut() {
+    let status;
+    if (this.EventStatus) {
+      status = '1';
+    } else {
+      status = '0';
+    }
     this.calendarService.updateSettings(
-      this.defaultTime, this.snap, this.MINUTES_UNITL_AUTO_LOGOUT, this.commit, this.oppening, this.closing, localStorage.getItem('id'), localStorage.getItem('systemid'))
+      this.defaultTime, this.snap, this.MINUTES_UNITL_AUTO_LOGOUT, this.commit,
+      this.oppening, this.closing, this.Title1, this.Title2, this.Title3, status, localStorage.getItem('id'), localStorage.getItem('systemid'))
       .subscribe(
         data => {
         }

@@ -1,5 +1,6 @@
 {
 
+
   "login_text": "Anmeldung",
   "login_button": "Anmeldung",
   "logout_message": "Logout",
@@ -12,6 +13,7 @@
   "incorrect_login_or_password": "Falsches login order passwort",
   "staff" : "Mitarbeiter",
   "updated_detected" : "Änderungen zum server übertragen",
+
   "settings": "Einstellungen",
   "commit" : "Änderungen freigeben",
   "timeout_befor_logout": "Zeit bis zum automatischen Logout",
@@ -22,7 +24,26 @@
   "change_staff": "Personalwechsel",
   "staff_name": "Mitarbeiter",
   "start_date": "Von",
-  "end_date": "Bis"
+  "end_date": "Bis",
+  "event_title": "Angezegte Texte 1",
+  "event_title2": "Angezegte Texte 2 ",
+  "event_title3": "Angezegte Texte 3",
+  "time": "Zeit",
+  "event": "Information",
+  "company_name": "Unternehmen",
+  "company_no": "Firma Nr",
+  "servicecase_no": "Auftrag Nr",
+  "shortdescription": "Kurztext",
+  "longdescription": "Langtext",
+  "taskttype": "Auftragstyp",
+  "empty": "Leer",
+
+  "status": "Status",
+  "new": "Neu",
+  "traveling": "Reisen",
+  "waiting": "Warten",
+  "paused": "Pause",
+  "active": "Aktiv"
 
 
 }

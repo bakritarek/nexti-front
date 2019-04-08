@@ -10,6 +10,8 @@ import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {endTimeRange} from '@angular/core/src/profile/wtf_impl';
 import {and} from '@angular/router/src/utils/collection';
+import {Title} from '@angular/platform-browser';
+import {NgxSpinnerService} from 'ngx-spinner';
 const STORE_KEY =  'lastAction';
 const CHECK_INTERVAL = 100;
 @Component({
@@ -71,7 +73,16 @@ export class CalendarsComponent implements OnInit {
   SettingModalIsOpen = false;
   WeekResized = false;
   DayResized = false;
-
+  statusIcon;
+  isTimeout = true;
+  EventStatus;
+  Title;
+  Title2;
+  Title3;
+  rendred = false;
+  WeekRendred = false;
+  DayRendred = false;
+  description1;
   public getLastAction() {
     return parseInt(localStorage.getItem(STORE_KEY), 10);
   }
@@ -79,10 +90,15 @@ export class CalendarsComponent implements OnInit {
     localStorage.setItem(STORE_KEY, lastAction.toString());
   }
   constructor(private calendarService: CalendarService, private router: Router
-              , private user: GeneralService, private auth: AuthService) {
+              , private user: GeneralService, private auth: AuthService, private spinner: NgxSpinnerService) {
 
-    this.getData();
+
     this.prepareCalendar();
+    setTimeout(() => {
+      this.getData();
+
+    }, 200);
+
     setTimeout(() => {
 
       this.createCalendar();
@@ -94,7 +110,12 @@ export class CalendarsComponent implements OnInit {
       this.initInterval();
       localStorage.setItem(STORE_KEY, Date.now().toString());
 
-    }, 100);
+    }, 1000);
+
+    setTimeout(() => {
+
+      this.eventRender();
+    }, 1000);
 
 
   }
@@ -132,14 +153,18 @@ export class CalendarsComponent implements OnInit {
           }
           let company = '';
           let title = '';
-          if (value['servicecase'][i]['company']) {
-             company = value['servicecase'][i]['company']['name'].substring(0, 25);
-             title = value['servicecase'][i]['company']['name'].substring(0, 25);
-          } else {
-             company = '';
-             title = value['servicecase'][i].longdescription.substring(0, 10);
+          if (this.Title === 'company') {
+            if (value['servicecase'][i]['company']) {
+              company = value['servicecase'][i]['company']['name'].substring(0, 25);
+              title = value['servicecase'][i]['company']['name'].substring(0, 25);
+            } else {
+              company = '';
+              title = value['servicecase'][i].longdescription.substring(0, 10);
+            }
           }
-
+          if (this.Title === 'staff') {
+            title = value['name'];
+          }
           this.event = {
             id: id,
             start: start,
@@ -153,8 +178,10 @@ export class CalendarsComponent implements OnInit {
             color: value['color']['color'],
             staff: value['name'],
             staff_id: value['id'],
-            className: 'popover__title',
+            className: 'popover__title sqd sqdqsd qsdqsd',
             company: company,
+            url: '#' + id,
+            status: value['servicecase'][i].status,
           };
           this.events.push(this.event);
 
@@ -177,6 +204,16 @@ export class CalendarsComponent implements OnInit {
       this.MINUTES_UNITL_AUTO_LOGOUT = data['timeout'];
       this.oppening = data['start_time'];
       this.closing = data['end_time'];
+      this.Title = data['title'];
+      this.Title2 = data['title2'];
+      this.Title3 = data['title3'];
+      this.description1 = data['title'];
+      if (data['status'] === '1') {
+        this.EventStatus = true;
+      }
+      if (data['status'] === '0') {
+        this.EventStatus = false;
+      }
 
     });
     if (localStorage.getItem('lang') === 'de') {
@@ -200,28 +237,40 @@ export class CalendarsComponent implements OnInit {
         .children[2].children[0].children[0].style.height = total + 'px';
 
         this.WeekResized = true;
+
+        this.rendred = false;
+        this.DayRendred = false;
     }
 
     if (this.ucCalendar.element.nativeElement.children[1].children[0].className === 'fc-view fc-agendaDay-view fc-agenda-view') {
       const total = $('.fc-slats').height();
       this.ucCalendar.element.nativeElement.children[1].children[0].children[0].children[1].children[0].children[0]
         .children[2].children[0].children[0].style.height = total + 'px';
+
       this.DayResized = true;
+
+      this.WeekRendred = false;
+      this.rendred = false;
+
+    }
+    if (this.ucCalendar.element.nativeElement.children[1].children[0].className
+      === 'fc-view fc-month-view fc-basic-view') {
+      this.DayRendred = false;
+      this.WeekRendred = false;
+
     }
 
   }
   createCalendar() {
-    const time = +this.closing.substring(0, 2) - 2;
-    this.reziseCalendar = 3.2 - ((+time - 12) * 0.3) ;
-    this.reziseCalendar =  $(window).height() * 0.75;
-    this.reziseCalendar = $('.fc-slats')['prevObject']['0']['defaultView']['innerHeight'] - 200;
-
-    const bottomContainerPos = this.Row.nativeElement.clientHeight;
-
+    let defaultView = localStorage.getItem('view');
+    if (!defaultView) {
+      defaultView = 'month';
+    }
     this.calendarOptions = {
       editable: true,
       eventLimit: true,
       locale : localStorage.getItem('lang'),
+      defaultView: defaultView,
       views: {
         month: {
           timeFormat: 'H:mm',
@@ -260,9 +309,110 @@ export class CalendarsComponent implements OnInit {
       snapDuration: moment.duration(parseInt(this.defaultTime, 10), 'minutes'),
       minTime: moment.duration(this.oppening),
       maxTime: moment.duration(this.closing),
+
     } ;
 
 
+  }
+  eventRender() {
+    if (
+      this.ucCalendar.element.nativeElement.children[1].children[0].className === 'fc-view fc-month-view fc-basic-view' &&
+    this.rendred === false) {
+      const length = $('.fc-event-container a').length;
+      for (let i = 0; i < length; i++) {
+
+        const le = $('.fc-event-container a')[i]['href'].length;
+        const url = $('.fc-event-container a')[i]['href'];
+        const pos = url.indexOf('#') + 1;
+        const rs = url.substring(pos, le);
+        const done = '<i class="fa fa-check" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+        const waiting = '<i class="fa fa-stop" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+        const pause = '<i class="fa fa-pause" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+        const active = '<i class="fa fa-play" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+        const traveling = '<i class="fa fa-automobile" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+        const newtask = '<i class="fa fa-plus" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+
+        $('.fc-event-container a div')[i]['id'] = 'id' + rs;
+
+        this.calendarService.getStatusFromHref(rs).subscribe(data => {
+
+          if (data['status'] === 'new') {
+            $('#id' + rs).append(newtask);
+          }
+          if (data['status'] === 'traveling') {
+            $('#id' + rs).append(traveling);
+          }
+          if (data['status'] === 'done') {
+            $('#id' + rs).append(done);
+          }
+          if (data['status'] === 'waiting') {
+            $('#id' + rs).append(waiting);
+          }
+          if (data['status'] === 'paused') {
+            $('#id' + rs).append(pause);
+          }
+          if (data['status'] === 'active') {
+            $('#id' + rs).append(active);
+          }
+        });
+
+        this.calendarService.getTitle(rs, this.Title).subscribe(data => {
+          $('#id' + rs ).append( '<b>' + data + '</b>' );
+        });
+      }
+      this.rendred = true;
+    }
+
+
+    if (this.ucCalendar.element.nativeElement.children[1].children[0].className === 'fc-view fc-agendaWeek-view fc-agenda-view'
+    && this.WeekRendred === false) {
+
+      const lengt = $('.fc-event-container a').length;
+      for (let i = 0; i < lengt; i++) {
+        const le = $('.fc-event-container a')[i]['href'].length;
+        const url = $('.fc-event-container a')[i]['href'];
+        const pos = url.indexOf('#') + 1;
+        const rs = url.substring(pos, le);
+
+        this.calendarService.getTitle(rs, this.Title).subscribe(data => {
+
+          $('#week' + rs ).append( '<b>' + data + '</b>' );
+        });
+        $('.fc-event-container a')[i]['id'] = 'week' + rs;
+        this.calendarService.getTitle(rs, this.Title2).subscribe(data => {
+
+          $('#week' + rs).append('<div class="fc-title"><b>' + data + '</b> </div>');
+        });
+        this.calendarService.getTitle(rs, this.Title3).subscribe(data => {
+          $('#week' + rs).append('<div class="fc-title"><b>' + data + '</b> </div>');
+        });
+      }
+      this.WeekRendred = true;
+    }
+
+    if (this.ucCalendar.element.nativeElement.children[1].children[0].className === 'fc-view fc-agendaDay-view fc-agenda-view'
+      && this.DayRendred === false) {
+      const lengt = $('.fc-event-container a').length;
+      for (let i = 0; i < lengt; i++) {
+        const le = $('.fc-event-container a')[i]['href'].length;
+        const url = $('.fc-event-container a')[i]['href'];
+        const pos = url.indexOf('#') + 1;
+        const rs = url.substring(pos, le);
+        this.calendarService.getTitle(rs, this.Title).subscribe(data => {
+
+          $('#day' + rs ).append( '<b>' + data + '</b>' );
+        });
+        $('.fc-event-container a')[i]['id'] = 'day' + rs;
+        this.calendarService.getTitle(rs, this.Title2).subscribe(data => {
+
+          $('#day' + rs).append('<div class="fc-title"><b>' + data + '</b> </div>');
+        });
+        this.calendarService.getTitle(rs, this.Title3).subscribe(data => {
+          $('#day' + rs).append('<div class="fc-title"><b>' + data + '</b> </div>');
+        });
+      }
+      this.DayRendred = true;
+    }
   }
   Color(elem) {
 
@@ -271,7 +421,6 @@ export class CalendarsComponent implements OnInit {
     this.staffs.forEach((value => {
       if (+value.id === +elem.target.id) {
         this.color = value['color'];
-        console.log(value['color']);
       }
     }));
     if (elem.target.localName === 'div') {
@@ -306,7 +455,7 @@ export class CalendarsComponent implements OnInit {
 
   }
   updateData(ids) {
-    this.events = [];
+    this.events = [] ;
     this.idsStr = '';
     ids.forEach((value => {
       this.idsStr = this.idsStr + value + ';';
@@ -320,12 +469,18 @@ export class CalendarsComponent implements OnInit {
           let end;
           let company = '';
           let title = '';
-          if (value['servicecase'][i]['company']) {
-            company = value['servicecase'][i]['company']['name'].substring(0, 25);
-            title = value['servicecase'][i]['company']['name'].substring(0, 25);
-          } else {
-            company = '';
-            title = value['servicecase'][i].longdescription.substring(0, 10);
+
+          if (this.Title === 'company') {
+            if (value['servicecase'][i]['company']) {
+              company = value['servicecase'][i]['company']['name'].substring(0, 25);
+              title = value['servicecase'][i]['company']['name'].substring(0, 25);
+            } else {
+              company = '';
+              title = value['servicecase'][i].longdescription.substring(0, 10);
+            }
+          }
+          if (this.Title === 'staff') {
+            title = value['name'];
           }
           if (value['servicecase'][i].latestenddate !== '' &&  value['servicecase'][i].latestendtime !== '') {
             end = value['servicecase'][i].latestenddate + 'T' + value['servicecase'][i].latestendtime;
@@ -347,6 +502,8 @@ export class CalendarsComponent implements OnInit {
             staff_id: value['id'],
             className: 'popover__title',
             company: company,
+            url: '#' + id,
+            status: value['servicecase'][i].status,
           };
           this.events.push(this.event);
 
@@ -354,7 +511,11 @@ export class CalendarsComponent implements OnInit {
       }));
 
       this.ucCalendar.renderEvents(this.events);
+      this.rendred = false;
+      this.WeekRendred = false;
+      this.DayRendred = false;
     });
+
   }
   draging(elem) {
 
@@ -491,9 +652,13 @@ export class CalendarsComponent implements OnInit {
       this.calendarService.beforCommit(this.elemUpdated.id);
 
       this.updateData(this.elemChecked);
+
     }, 100);
 
+    setTimeout(() => {
 
+      this.eventRender();
+    }, 500);
   }
   PopOver(elem): void {
 
@@ -503,11 +668,36 @@ export class CalendarsComponent implements OnInit {
       end: elem.detail.event.end,
       staff: elem.detail.event.staff,
       title: elem.detail.event.title,
-      company: elem.detail.event.company
+      company: elem.detail.event.company,
+      status: elem.detail.event.status,
     };
     this.pop = true;
     this.left = elem.detail.jsEvent.clientX - 290;
     this.top = elem.detail.jsEvent.clientY + 50;
+    const done = '<i class="fa fa-check" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+    const waiting = '<i class="fa fa-stop" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+    const pause = '<i class="fa fa-pause" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+    const active = '<i class="fa fa-play" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+    const traveling = '<i class="fa fa-automobile" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+    const newtask = '<i class="fa fa-plus" aria-hidden="true" style="float: right;padding-top: 2px;"></i>';
+    if (elem.detail.event.status === 'new') {
+      this.statusIcon = newtask;
+    }
+    if (elem.detail.event.status === 'done') {
+      this.statusIcon = done;
+    }
+    if (elem.detail.event.status === 'waiting') {
+      this.statusIcon = waiting;
+    }
+    if (elem.detail.event.status === 'pause') {
+      this.statusIcon = pause;
+    }
+    if (elem.detail.event.status === 'active') {
+      this.statusIcon = active;
+    }
+    if (elem.detail.event.status === 'traveling') {
+      this.statusIcon = traveling;
+    }
 
   }
   undisplay() {
@@ -525,7 +715,10 @@ export class CalendarsComponent implements OnInit {
         this.ChangeStaffModal = false;
         this.modal.nativeElement.style.display = 'none';
         this.SettingModalIsOpen = false;
+        setTimeout(() => {
 
+          this.eventRender();
+        }, 500);
       }
     });
   }
@@ -554,14 +747,11 @@ export class CalendarsComponent implements OnInit {
     setTimeout(() => {
 
      this.SettingModalIsOpen = true;
-      console.log(this.SettingModalIsOpen);
     }, 500);
 
 
   }
   unDisplayChangeStaff() {
-
-      console.log('zaaab');
       this.ChangeStaffModal = false;
       this.modal.nativeElement.style.display = 'none';
     this.SettingModalIsOpen = false;
@@ -592,19 +782,19 @@ export class CalendarsComponent implements OnInit {
     window.onkeypress = () => { this.reset(); };
   }
   check() {
-
-    setTimeout(() => {
-      this.reziseCalendarFunction();
-    }, 0);
+    this.reziseCalendarFunction();
+    this.eventRender();
     this.scrollHeigth = (this.Row.nativeElement.clientHeight - 200) + 'px';
     this.NavbarWidth = (this.Calendar.nativeElement.clientWidth - 100) + 'px';
 
     if (this.router.url !== '/login') {
       const now = Date.now();
       const timeleft = this.getLastAction() + this.MINUTES_UNITL_AUTO_LOGOUT * 60 * 1000;
-      const diff = timeleft - now;
-      const isTimeout = diff < 0;
-
+      let diff = timeleft - now;
+      if (diff < 0) {
+        diff = this.MINUTES_UNITL_AUTO_LOGOUT * 60 * 1000;
+      }
+       this.isTimeout = diff < 0;
       this.auth.stillLoged().subscribe(data => {
         if (data['isLoged'] === false) {
           localStorage.setItem('stillLoged', '0');
@@ -613,10 +803,13 @@ export class CalendarsComponent implements OnInit {
         }
       });
       const stillLoged = localStorage.getItem('stillLoged');
-      if (isTimeout || stillLoged === '0')  {
+      const view = this.ucCalendar.fullCalendar('getView').name;
+      localStorage.setItem('view', view);
+      if (this.isTimeout || stillLoged === '0')  {
         if (this.commit) {
           this.calendarService.Commit().subscribe(data2 => {
-            if (data2['result'] === 1) {
+            if (data2 === 1) {
+
               this.user.logout(localStorage.getItem('id')).subscribe(data3 => {
               });
               this.router.navigate(['/login']);
@@ -625,6 +818,7 @@ export class CalendarsComponent implements OnInit {
         } else {
           this.user.logout(localStorage.getItem('id')).subscribe(data2 => {
           });
+
           this.router.navigate(['/login']);
         }
 
@@ -634,10 +828,12 @@ export class CalendarsComponent implements OnInit {
   }
 
   Test() {
-    console.log('clicked');
+
   }
   Adjust(elem) {
 
   }
 
+  changeView() {
+  }
 }

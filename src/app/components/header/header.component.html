@@ -68,7 +68,7 @@
         <a class="nav-link" title="{{'updated_detected' | translate}}" *ngIf="LocalStorage() === '0'"  data-toggle="tab">
           <img src="http://192.168.100.136/nexti/web/img/icons8-database-import-50.png" style="width: 25px;height: 25px;">
         </a>
-        <a class="" title="Commit your changes to the server" *ngIf="LocalStorage() === '1'"  data-toggle="tab" (click)="Commit()" data-toggle="tooltip" data-placement="bottom"  data-container="body" title="{{'updated_detected' | translate}}"  data-original-title="Commit">
+        <a class=""  *ngIf="LocalStorage() === '1'"  (click)="Commit()" data-toggle="tooltip" data-placement="bottom"  data-container="body" title="{{'updated_detected' | translate}}"  data-original-title="Commit">
           <img src="http://192.168.100.136/nexti/web/img/icons8-database-import-50.png" class="element-animation" style="width: 25px;height: 25px;">
         </a>
 
@@ -87,6 +87,9 @@
           </button>
         </div>
         <div class="modal-body" (clickOutside)="ClickOutSide()">
+         <div class="col-md-5">
+           <h2><b>{{'time'| translate}}</b></h2>
+         </div>
           <div class="row">
             <div class="col-md-5 ml-auto">
               <div class="input-group">
@@ -127,7 +130,7 @@
                                                          {{'timeout_befor_logout' | translate}}
                                                     </span>
                 </div>
-                <select class="form-control" data-style="select-with-transition" [(ngModel)]="MINUTES_UNITL_AUTO_LOGOUT" title="Single Select" data-size="7" (change)="Refresh()">
+                <select class="form-control" data-style="select-with-transition" [(ngModel)]="MINUTES_UNITL_AUTO_LOGOUT" title="Single Select" data-size="7">
                   <option disabled> {{'timeout_befor_logout' | translate}}</option>
                   <option value="1">1 min</option>
                   <option value="15">15 min</option>
@@ -205,6 +208,75 @@
 
             </div>
           </div>
+          <div class="col-md-5">
+            <h2><b>{{ 'event'|translate }}</b></h2>
+          </div>
+          <div class="row">
+            <div class="col-md-5 ml-auto">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                         {{'event_title' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" [(ngModel)]="Title1" (change)="UpdateTitlesArray()" title="Single Select" data-size="7">
+                  <option disabled> {{'event_title' | translate}}</option>
+                  <option *ngFor="let Title of Titles" [value]="Title.name">{{Title.name | translate}}</option>
+
+                </select>
+              </div>
+
+
+            </div>
+            <div class="col-md-5 mr-auto">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                         {{'event_title2' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" (change)="UpdateTitlesArray()" [(ngModel)]="Title2" title="Single Select" data-size="7">
+                  <option disabled> {{'event_title' | translate}}</option>
+                  <option value="leer">{{ 'empty'|translate }}</option>
+                  <option *ngFor="let Title of Titles2"  [value]="Title.name">{{Title.name | translate}}</option>
+
+                </select>
+              </div>
+
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 ml-auto">
+
+              <div class="input-group">
+                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                         {{'event_title3' | translate}}
+                                                    </span>
+                </div>
+                <select class="form-control" data-style="select-with-transition" (change)="UpdateTitlesArray()" [(ngModel)]="Title3" title="Single Select" data-size="7">
+                  <option disabled> {{'event_title' | translate}}</option>
+                  <option value="leer">{{ 'empty'|translate }}</option>
+                  <option *ngFor="let Title of Titles3" [value]="Title.name">{{Title.name | translate}}</option>
+                </select>
+              </div>
+
+            </div>
+            <div class="col-md-5 mr-auto">
+              <div class="togglebutton" style="
+    margin-top: 20px;
+">
+                <label>
+                  <input type="checkbox"  [(ngModel)]="EventStatus"  (click)="UpdateSettings()">
+                  <span class="toggle"></span>
+                  Display Status
+                </label>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
